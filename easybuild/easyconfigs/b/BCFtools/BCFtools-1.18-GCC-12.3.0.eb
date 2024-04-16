@@ -37,3 +37,10 @@ sanity_check_paths = {
 }
 
 moduleclass = 'bio'
+
+# Additional options to set the plugins directory
+modextravars = {
+#    'BCFTOOLS_PLUGINS':'$EBROOTBCFTOOLS/libexec/bcftools'
+   'BCFTOOLS_PLUGINS':'%(installdir)s/libexec/bcftools' # Template alternative if EBROOTBCFTOOLS has an issue
+}
+modloadmsg= 'Plugin directory defaults to "%(installdir)s/libexec/bcftools". To use a custom plugin direcory, use "BCFTOOLS_PLUGINS=/path/to/custom/plugins_dir'
