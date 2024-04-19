@@ -1,0 +1,59 @@
+# Updated by: Pavel Grochal (INUITS)
+# License: GPLv2
+
+easyblock = 'ConfigureMake'
+
+name = 'AUGUSTUS'
+version = '3.5.0'
+
+homepage = 'https://bioinf.uni-greifswald.de/augustus/'
+description = "AUGUSTUS is a program that predicts genes in eukaryotic genomic sequences"
+
+toolchain = {'name': 'foss', 'version': '2023a'}
+
+source_urls = [GITHUB_SOURCE]
+sources = ['v%(version)s.tar.gz']
+checksums = ['5ed6ce6106303b800c5e91d37a250baff43b20824657b853ae04d11ad8bdd686']
+
+builddependencies = [
+    ('Python', '3.11.3'),
+]
+dependencies = [
+    ('zlib', '1.2.13'),
+    ('Boost', '1.82.0'),
+    ('GSL', '2.7'),
+    ('SAMtools', '1.18'),
+    ('HTSlib', '1.18'),
+    ('BCFtools', '1.18'),
+    ('lpsolve', '5.5.2.11'),
+    ('SuiteSparse', '5.13.0', '-METIS-5.1.0'),
+    ('BamTools', '2.5.2'),
+    ('SQLite', '3.42.0'),
+]
+
+# run "make clean" to avoid using binaries included with the source tarball
+prebuildopts = "make clean && "
+buildopts = 'COMPGENEPRED=true SQLITE=true ZIPINPUT=true MYSQL=false CXX="$CXX"  INCLUDE_PATH_ZLIB=-I$EBROOTZLIB/include LIBRARY_PATH_ZLIB="-L$EBROOTZLIB/lib -Wl,-rpath,$EBROOTZLIB/lib" INCLUDE_PATH_BOOST=-I$EBROOTBOOST/include LIBRARY_PATH_BOOST="-L$EBROOTBOOST/lib -Wl,-rpath,$EBROOTBOOST/lib" INCLUDE_PATH_LPSOLVE=-I$EBROOTLPSOLVE/include LIBRARY_PATH_LPSOLVE="-L$EBROOTLPSOLVE/lib -Wl,-rpath,$EBROOTLPSOLVE/lib" INCLUDE_PATH_SUITESPARSE=-I$EBROOTSUITESPARSE/include LIBRARY_PATH_SUITESPARSE="-L$EBROOTSUITESPARSE/lib -Wl,-rpath,$EBROOTSUITESPARSE/lib" INCLUDE_PATH_GSL=-I$EBROOTGSL/include LIBRARY_PATH_GSL="-L$EBROOTGSL/lib -Wl,-rpath,$EBROOTGSL/lib" INCLUDE_PATH_SQLITE=-I$EBROOTSQLITE/include LIBRARY_PATH_SQLITE="-L$EBROOTSQLITE/lib -Wl,-rpath,$EBROOTSQLITE/lib" INCLUDE_PATH_BAMTOOLS=-I$EBROOTBAMTOOLS/include/bamtools LIBRARY_PATH_BAMTOOLS="-L$EBROOTBAMTOOLS/lib -Wl,-rpath,$EBROOTBAMTOOLS/lib" INCLUDE_PATH_HTSLIB=-I$EBROOTHTSLIB/include/htslib LIBRARY_PATH_HTSLIB="-L$EBROOTHTSLIB/lib -Wl,-rpath,$EBROOTHTSLIB/lib"'
+
+preinstallopts = "sed -i '/ln -sf/d' Makefile && "
+installopts = "INSTALLDIR=%(installdir)s "
+
+github_account = 'Gaius-Augustus'
+skipsteps = ['configure']
+
+sanity_check_paths = {
+    'files': ['bin/%(namelower)s', 'bin/bam2hints', 'bin/etraining', 'bin/fastBlockSearch', 'bin/filterBam', 'bin/getSeq', 'bin/homGeneMapping', 'bin/joingenes', 'bin/load2sqlitedb', 'bin/prepareAlign'],
+    'dirs': ['config', 'scripts'],
+}
+
+sanity_check_commands = ['%(namelower)s --help']
+
+modextrapaths = {'PATH': 'scripts'}
+
+modextravars = {
+    'AUGUSTUS_BIN_PATH': '%(installdir)s/bin',
+    'AUGUSTUS_CONFIG_PATH': '%(installdir)s/config',
+    'AUGUSTUS_SCRIPTS_PATH': '%(installdir)s/scripts',
+}
+
+moduleclass = 'bio'
