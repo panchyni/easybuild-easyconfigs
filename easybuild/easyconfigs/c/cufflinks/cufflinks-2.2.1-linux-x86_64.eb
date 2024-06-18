@@ -1,0 +1,29 @@
+easyblock = 'Binary'
+
+name = 'cufflinks'
+version = '2.2.1'
+versionsuffix = '-linux-x86_64'
+
+homepage = 'http://cole-trapnell-lab.github.io/cufflinks/'
+description = """Cufflinks """
+
+toolchain = SYSTEM
+
+source_urls = ['http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/']
+sources = ['cufflinks-%(version)s.Linux_x86_64.tar.gz']
+
+install_cmd = "tar -xzf %(builddir)s/cufflinks-2.2.1.Linux_x86_64.tar.gz && "
+install_cmd += "mkdir %(installdir)s/bin && "
+install_cmd += "cp -r %(builddir)s/cufflinks-2.2.1.Linux_x86_64/* %(installdir)s/bin"
+
+modextrapaths = {
+    "PATH": ["bin"]
+}
+
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ["bin"],
+}
+
+moduleclass = 'bio'
