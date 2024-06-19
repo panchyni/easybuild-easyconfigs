@@ -1,0 +1,69 @@
+easyblock = 'Binary'
+
+name = 'CONVERGE'
+version = '3.0.28'
+versionsuffix = '-linux-x86_64'
+
+homepage = 'https://convergecfd.com/getting-started-guide-v3/converge_installation_unix_linux.htm'
+description = """CONVERGE """
+
+toolchain = SYSTEM
+
+# Source files found in EasyBuild sourcepath/{first letter in name undercase}/{name}
+sources=["Convergent_Science_Full_Package-%(version)s.tar.gz"]
+
+# Install commands
+install_cmd = "tar -xzf %(builddir)s/Convergent_Science_Full_Package-%(version)s.tar.gz && "
+install_cmd += "cp -r %(builddir)s//Convergent_Science_Full_Package-%(version)s %(installdir)s/ && "
+install_cmd += "echo %(installdir)s/ | bash  %(installdir)s/Convergent_Science_Full_Package-%(version)s/INSTALL && "
+install_cmd += "echo 'DONE'"
+
+
+### Module commands
+
+# Aliases
+modaliases={"converge":"converge-intelmpi"}
+
+# Load Message
+modloadmsg = "Default MPI is Intel\n Alternative MPI setting can be found in '%(installdir)s/Convergent_Science_Full_Package-%(version)s/Convergent_Science/Environment/scripts/CONVERGE/ (source the shell script in the desired subfolder)"
+
+# Environment Variables and Path extracted from the MPI scoure script (Intel version)  
+
+# From sh_to_mod + mod_to_eb
+modextravars ={
+    'BOOST_ROOT': '%(installdir)s/Convergent_Science_Full_Package-3.0.28/Convergent_Science//CONVERGE/3.0.28/include/third_party', 
+    'CONVERGE_ROOT': '%(installdir)s/Convergent_Science_Full_Package-3.0.28/Convergent_Science/', 
+    'CVG_SOLVER_ROOT': '%(installdir)s/Convergent_Science_Full_Package-3.0.28/Convergent_Science//CONVERGE/3.0.28', 
+    'FI_PROVIDER_PATH': '%(installdir)s/Convergent_Science_Full_Package-3.0.28/Convergent_Science//CONVERGE/3.0.28/bin/mpi/INTEL/intel64/libfabric/lib/prov', 
+    'I_MPI_ADJUST_ALLREDUCE_COMPOSITION': '0', 
+    'I_MPI_ADJUST_ALLREDUCE_NETWORK': '2', 
+    'I_MPI_ROOT': '%(installdir)s/Convergent_Science_Full_Package-3.0.28/Convergent_Science//CONVERGE/3.0.28/bin/mpi/INTEL', 
+    'I_MPI_SHM_HEAP_VSIZE': '512', 
+    'UCX_MEM_EVENTS': 'n', 
+    'UCX_TLS': 'all', 
+    'cvg_installroot': '%(installdir)s/Convergent_Science_Full_Package-3.0.28/Convergent_Science/', 
+    'cvg_topdir': '%(installdir)s/Convergent_Science_Full_Package-3.0.28/Convergent_Science//CONVERGE/3.0.28',
+    # License file is the same across versions, needs to be added manually
+    'RLM_LICENSE':'2765@lm-02.i'
+}
+
+modextrapaths ={
+'LD_LIBRARY_PATH': ['Convergent_Science_Full_Package-3.0.28/Convergent_Science/CONVERGE/3.0.28/lib64/INTEL', 
+    'Convergent_Science_Full_Package-3.0.28/Convergent_Science/CONVERGE/3.0.28/lib64', 
+    'Convergent_Science_Full_Package-3.0.28/Convergent_Science/CONVERGE/3.0.28/bin/mpi/INTEL/intel64/lib/release', 
+    'Convergent_Science_Full_Package-3.0.28/Convergent_Science/CONVERGE/3.0.28/bin/mpi/INTEL/intel64/lib', 
+    'Convergent_Science_Full_Package-3.0.28/Convergent_Science/CONVERGE/3.0.28/bin/mpi/INTEL/intel64/libfabric/lib', 
+    'Convergent_Science_Full_Package-3.0.28/Convergent_Science/CONVERGE/3.0.28/bin/mpi/ucx/1.7.0/lib'], 
+'PATH': ['Convergent_Science_Full_Package-3.0.28/Convergent_Science/CONVERGE/3.0.28/bin', 
+    'Convergent_Science_Full_Package-3.0.28/Convergent_Science/CONVERGE/3.0.28/bin/mpi/INTEL/intel64/bin', 
+    'Convergent_Science_Full_Package-3.0.28/Convergent_Science/CONVERGE/3.0.28/bin/mpi/INTEL/intel64/libfabric/bin', 
+    'Convergent_Science_Full_Package-3.0.28/Convergent_Science/CONVERGE/3.0.28/bin/mpi/ucx/1.7.0/bin', 
+    'Convergent_Science_Full_Package-3.0.28/Convergent_Science/CONVERGE/3.0.28/utilities/bin', 
+    'Convergent_Science_Full_Package-3.0.28/Convergent_Science/CONVERGE/3.0.28/bin']
+}
+
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ["Convergent_Science_Full_Package-%(version)s"],
+}

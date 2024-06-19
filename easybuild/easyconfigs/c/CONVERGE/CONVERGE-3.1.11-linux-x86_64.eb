@@ -1,0 +1,66 @@
+easyblock = 'Binary'
+
+name = 'CONVERGE'
+version = '3.1.11'
+versionsuffix = '-linux-x86_64'
+
+homepage = 'https://convergecfd.com/getting-started-guide-v3/converge_installation_unix_linux.htm'
+description = """CONVERGE """
+
+toolchain = SYSTEM
+
+# Source files found in EasyBuild sourcepath/{first letter in name undercase}/{name}
+sources=["Convergent_Science_Full_Package-%(version)s.tar.gz"]
+
+# Install commands
+install_cmd = "tar -xzf %(builddir)s/Convergent_Science_Full_Package-%(version)s.tar.gz && "
+install_cmd += "cp -r %(builddir)s//Convergent_Science_Full_Package-%(version)s %(installdir)s/ && "
+install_cmd += "echo %(installdir)s/ | bash  %(installdir)s/Convergent_Science_Full_Package-%(version)s/INSTALL && "
+# Automatically set paths for environment files
+install_cmd += "find %(installdir)s/Convergent_Science_Full_Package-%(version)s/Convergent_Science/Environment/scripts/CONVERGE -type f -name *.sh -exec sed -i 's#</path/to/install/root>#%(installdir)s/Convergent_Science_Full_Package-%(version)s/Convergent_Science/#g' '{}' \; && "
+install_cmd += "echo 'DONE'"
+
+
+### Module commands
+
+# Aliases
+modaliases={"converge":"converge-intelmpi"}
+
+# Load Message
+modloadmsg = "Default MPI is Intel\n Alternative MPI setting can be found in '%(installdir)s/Convergent_Science_Full_Package-%(version)s/Convergent_Science/Environment/scripts/CONVERGE/ (source the shell script in the desired subfolder)"
+
+# Environment Variables and Path extracted from the MPI scoure script (Intel version)  
+modextravars = {
+    "BOOST_ROOT": "%(installdir)s/Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/include/third_party",
+    "CONVERGE_ROOT": "%(installdir)s/Convergent_Science_Full_Package-%(version)s/Convergent_Science",
+    "CVG_SOLVER_ROOT": "%(installdir)s/Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s",
+    "FI_PROVIDER_PATH": "%(installdir)s/Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/bin/mpi/INTEL/lib/libfabric/prov",
+    "I_MPI_ADJUST_ALLREDUCE_COMPOSITION": "0",
+    "I_MPI_ADJUST_ALLREDUCE_NETWORK": "2",
+    "I_MPI_ROOT": "%(installdir)s/Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/bin/mpi/INTEL",
+    "I_MPI_SHM_HEAP_VSIZE": "512",
+    "UCX_MEM_EVENTS": "n",
+    "UCX_TLS": "all",
+    "cvg_topdir": "%(installdir)s/Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s",
+    "RLM_LICENSE":"2765@lm-02.i" # License file is the same across versions
+}
+
+modextrapaths = {
+    "LD_LIBRARY_PATH": ["Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/lib64/INTEL",
+        "Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/lib64",
+        "Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/bin/mpi/INTEL/lib",
+        "Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/bin/mpi/INTEL/lib/libfabric",
+        "Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/bin/mpi/INTEL/lib/release",
+        "Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/bin/mpi/ucx/1.7.0/lib"],
+    "PATH": ["Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/bin",
+        "Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/bin/mpi/INTEL/bin",
+        "Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/bin/mpi/ucx/1.7.0/bin",
+        "Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/bin/mpi/INTEL/bin/libfabric",
+        "Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/utilities/bin",
+        "Convergent_Science_Full_Package-%(version)s/Convergent_Science/CONVERGE/%(version)s/bin"]
+}
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ["Convergent_Science_Full_Package-%(version)s"],
+}

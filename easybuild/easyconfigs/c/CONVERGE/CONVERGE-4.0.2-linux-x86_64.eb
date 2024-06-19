@@ -1,0 +1,62 @@
+easyblock = 'Binary'
+
+name = 'CONVERGE'
+version = '4.0.2'
+versionsuffix = '-linux-x86_64'
+
+homepage = 'https://convergecfd.com/getting-started-guide-v3/converge_installation_unix_linux.htm'
+description = """CONVERGE """
+
+toolchain = SYSTEM
+
+# Source files found in EasyBuild sourcepath/{first letter in name undercase}/{name}
+sources=["CONVERGE_CFD_Bundle_%(version)s_linux64.sh"]
+
+# Make non-empty spoof folder for sanity check
+install_cmd = "mkdir %(installdir)s/spoof && "
+install_cmd += "touch %(installdir)s/spoof/spoof_cmd.sh && "
+
+# Install commands
+# Note: CONVERGE 4+ sets their own install path in the environment scripts
+install_cmd += " echo '%(installdir)s/\ny\n\n' | bash %(builddir)s/CONVERGE_CFD_Bundle_%(version)s_linux64.sh && "
+install_cmd += "echo 'DONE'"
+
+### Module commands
+
+# Aliases
+modaliases={"converge":"converge-intelmpi"}
+
+# Load Message
+modloadmsg = "Default MPI is Intel\n Alternative MPI setting can be found in '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.0.2/environment/x64/scripts/CONVERGE/ (source the shell script in the desired subfolder)"
+
+# Environment Variables and Path extracted from the MPI scoure script (Intel version)  
+modextravars = {'BOOST_ROOT': '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/include/third_party', 
+    'CONVERGE_ROOT': '%(installdir)s/Convergent_Science', 
+    'CVG_SOLVER_ROOT': '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE', 
+    'FI_PROVIDER_PATH': '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/bin/mpi/INTEL/lib/libfabric/prov', 
+    'I_MPI_ROOT': '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/bin/mpi/INTEL', 
+    'cvgdir': '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE', 
+    'installroot': '%(installdir)s/Convergent_Science', 
+    'mpidir': '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/bin/mpi',
+     # License file is the same across versions, needs to be added manually
+    'RLM_LICENSE':'2765@lm-02.i'
+}
+modextrapaths = {'LD_LIBRARY_PATH': ['Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/lib64', 
+    'Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/lib64/INTEL', 
+    'Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/bin/mpi/INTEL/lib', 
+    'Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/bin/mpi/INTEL/lib/libfabric', 
+    'Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/bin/mpi/INTEL/lib/release', 
+    'Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/bin/mpi/ucx/1.7.0/lib', 
+    # The "." is in the original CONVERGE environment scripts
+    '.'], 
+'PATH': ['Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/bin', 
+    'Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/bin/mpi/INTEL/bin', 'Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/bin/mpi/ucx/1.7.0/bin', 
+    'Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/bin/mpi/INTEL/bin/libfabric', 
+    'Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/utilities/x64/bin', 
+    'Convergent_Science/CONVERGE_CFD/4.0.2/CONVERGE/x64/bin']
+}
+
+sanity_check_paths = {
+    'files': [],   
+    'dirs': ["Convergent_Science"],
+}
