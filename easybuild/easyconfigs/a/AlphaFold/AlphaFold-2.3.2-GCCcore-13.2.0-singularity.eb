@@ -1,0 +1,43 @@
+easyblock = 'Binary'
+
+name = 'AlphaFold'
+version = '2.3.2'
+versionsuffix = '-singularity'
+
+homepage = 'https://github.com/prehensilecode/alphafold_singularity'
+description = """AlphaFold Singularity Image (community build) """
+
+toolchain = {'name': 'GCCcore', 'version': '13.2.0'}
+toolchainopts = {'pic': True}
+
+source_urls = ['https://github.com/prehensilecode/alphafold_singularity/raw/main/']
+
+sources = [
+    'run_singularity.py'
+]
+
+dependencies = [
+    ('Python-bundle-alphafold-singularity', '2.3.2'),
+]
+
+install_cmd = "singularity pull --arch amd64 library://prehensilecode/alphafold_singularity/alphafold:2.3.2-1 && "
+install_cmd += "mkdir -p %(installdir)s/bin && "
+install_cmd += "cp -r %(builddir)s/* %(installdir)s/bin && "
+install_cmd += "ln -s %(installdir)s/bin/alphafold_2.3.2-1.sif %(installdir)s/bin/alphafold.sif && "
+install_cmd += "chmod -R +x %(installdir)s/bin/"
+
+modloadmsg = "This is the singularity version of AlphaFold 2.3.2. For details on how the image was created and how to run AlphaFold using the run_singularity.py scirpt, see https://github.com/prehensilecode/alphafold_singularity."
+
+modextravars = {
+    "ALPHAFOLD_DIR":"%(installdir)s/bin/",
+    "ALPHAFOLD_DATADIR":"/mnt/research/common-data/alphafold/database_230",
+    "ALPHAFOLD_MODELS":"/mnt/research/common-data/alphafold/database_230/params",
+    "PYTHONNOUSERSITE":"1"
+}
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ["bin"],
+}
+
+moduleclass = 'bio'

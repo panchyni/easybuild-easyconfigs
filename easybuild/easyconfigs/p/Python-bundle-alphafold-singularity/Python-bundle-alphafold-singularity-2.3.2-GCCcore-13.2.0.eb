@@ -1,0 +1,36 @@
+easyblock = 'PythonBundle'
+
+name = 'Python-bundle-alphafold-singularity'
+version = '2.3.2'
+
+homepage = 'https://python.org/'
+description = "Bundle of Python packages from PyPI"
+
+toolchain = {'name': 'GCCcore', 'version': '13.2.0'}
+toolchainopts = {'pic': True}
+
+builddependencies = [
+    ('binutils', '2.40'),
+    ('UnZip', '6.0'),
+    ('pkgconf', '2.0.3'),
+]
+
+dependencies = [
+    ('Python', '3.11.5'),
+]
+
+use_pip = True
+sanity_pip_check = True
+
+exts_list = [
+    ('absl-py', '1.4.0', {
+        'modulename': 'absl',
+        'checksums': ['d2c244d01048ba476e7c080bd2c6df5e141d211de80223460d5b3b8a2a58433d'],
+    }),
+    ('spython', '0.3.13', {
+        'modulename': 'spython',
+        'checksums': ['931105675f7889705e50859df72f01b8e00b5ad92ab2e5d9ef47563343419e4e'],
+    }),
+]
+
+moduleclass = 'lib'
