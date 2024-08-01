@@ -1,0 +1,31 @@
+easyblock = 'PackedBinary'
+
+name = 'OpenRefine'
+version = '3.8.2'
+versionsuffix = '-Java-%(javaver)s'
+
+homepage = 'https://github.com/OpenRefine/OpenRefine'
+description = """OpenRefine is a power tool that allows you to load data, understand it, clean it up, reconcile it,
+ and augment it with data coming from the web."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/OpenRefine/OpenRefine/archive/']
+sources = ['%(version)s.tar.gz']
+checksums = ['49a58b492d9df2e7a770f2ff56b5e77a4f4bf65e0d3c0a6f2134d1c3d80ba55f']
+
+builddependencies = [
+    ('ant', '1.10.8', versionsuffix, True),
+]
+dependencies = [('Java', '11'),('Maven','3.6.3')]
+
+install_cmd = "cp -a OpenRefine-%(version)s/* %(installdir)s && cd %(installdir)s && ./refine build"
+
+sanity_check_paths = {
+    'files': ['refine'],
+    'dirs': ['server/classes'],
+}
+
+modextrapaths = {'PATH': 'refine'}
+
+moduleclass = 'tools'
