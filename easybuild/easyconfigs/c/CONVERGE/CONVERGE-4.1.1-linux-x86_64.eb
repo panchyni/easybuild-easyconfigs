@@ -1,0 +1,78 @@
+easyblock = 'Binary'
+
+name = 'CONVERGE'
+version = '4.1.1'
+versionsuffix = '-linux-x86_64'
+
+homepage = 'https://convergecfd.com/getting-started-guide-v3/converge_installation_unix_linux.htm'
+description = """CONVERGE """
+
+toolchain = SYSTEM
+
+# Source files found in EasyBuild sourcepath/{first letter in name undercase}/{name}
+sources=["CONVERGE_CFD_Bundle_%(version)s_linux_x64.sh"]
+
+# Make non-empty spoof folder for sanity check
+#install_cmd = "mkdir %(installdir)s/spoof && "
+#install_cmd += "touch %(installdir)s/spoof/spoof_cmd.sh && "
+
+# Install commands
+# Note: CONVERGE 4+ sets their own install path in the environment scripts
+install_cmd = " echo '%(installdir)s/\ny\n\n' | bash %(builddir)s/CONVERGE_CFD_Bundle_%(version)s_linux_x64.sh && "
+install_cmd += "echo 'DONE'"
+
+### Module commands
+
+# Aliases
+modaliases={"converge":"converge-intelmpi"}
+
+# Load Message
+modloadmsg = "Default MPI is Intel\n Alternative MPI setting can be found in '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.1.1/environment/x64/scripts/CONVERGE/ (source the shell script in the desired subfolder)"
+
+# Environment Variables and Path extracted from the MPI scoure script (Intel version)  
+modextravars = {
+    'BOOST_ROOT': '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/include/third_party', # This doesn't appear to be used in 4.1.1
+    'CATALYST_IMPLEMENTATION_NAME': 'paraview',
+    'CATALYST_IMPLEMENTATION_PATHS': '%(installdir)s/Convergent_Science/ParaView/5.11.0/INTEL/lib64/catalyst',
+    'CONVERGE_ROOT': '%(installdir)s/Convergent_Science', # This doesn't appear to be used in 4.1.1
+    'CVG_SOLVER_ROOT': '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE',  # This doesn't appear to be used in 4.1.1
+    'FI_PROVIDER_PATH': '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/bin/mpi/INTEL/libfabric/lib/prov', 
+    'I_MPI_SHM_HEAP_VSIZE': '512',
+    'I_MPI_ROOT': '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/bin/mpi/INTEL', # This doesn't appear to be used in 4.1.1 
+    'MESA_INC': '%(installdir)s/Convergent_Science/ParaView/mesa/18.3.6/include',
+    'MESA_LIB': '%(installdir)s/Convergent_Science/ParaView/mesa/18.3.6/lib',
+    'MESA_ROOT': '%(installdir)s/Convergent_Science/ParaView/mesa/18.3.6',
+    'UCX_MEM_EVENTS': 'n',
+    'UCX_TLS': 'all',
+    'VTK_SILENCE_GET_VOID_POINTER_WARNINGS': 'TRUE',
+    'env_scripts': '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.1.1/environment/x64/scripts',
+    'cvgdir': '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE', # This doesn't appear to be used in 4.1.1
+    'installroot': '%(installdir)s/Convergent_Science', # This doesn't appear to be used in 4.1.1
+    'mpidir': '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/bin/mpi', # This doesn't appear to be used in 4.1.1
+     # License file is the same across versions, needs to be added manually
+    'RLM_LICENSE':'2765@lm-02.i'
+}
+modextrapaths = {'LD_LIBRARY_PATH': ['Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/lib64', 
+    'Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/lib64/INTEL', 
+    'Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/bin/mpi/INTEL/lib', 
+    'Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/bin/mpi/INTEL/libfabric/lib', 
+    'Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/bin/mpi/INTEL/lib/release', 
+    'Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/bin/mpi/ucx/1.7.0/lib',
+    'Convergent_Science/ParaView/5.11.0/INTEL/lib64',
+    'Convergent_Science/ParaView/mesa/18.3.6/lib', 
+    # The "." is in the original CONVERGE environment scripts
+    '.'], 
+'PATH': ['Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/bin', 
+    'Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/bin/mpi/INTEL/bin', 
+    'Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/bin/mpi/ucx/1.7.0/bin', 
+    'Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/bin/mpi/INTEL/libfabric/bin', 
+    'Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/utilities/x64/bin', 
+    'Convergent_Science/CONVERGE_CFD/4.1.1/CONVERGE/x64/bin',
+    'Convergent_Science/ParaView/5.11.0/INTEL/bin'],
+'PYTHONPATH': ['Convergent_Science/ParaView/5.11.0/INTEL/lib64/python3.7/site-packages']
+}
+
+sanity_check_paths = {
+    'files': [],   
+    'dirs': ["Convergent_Science"],
+}
