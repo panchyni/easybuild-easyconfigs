@@ -24,7 +24,7 @@ install_cmd += "echo 'DONE'"
 ### Module commands
 
 # Aliases
-modaliases={"converge":"converge-intelmpi"}
+modaliases={"converge":"converge-intel"}
 
 # Load Message
 modloadmsg = "Default MPI is Intel\n Alternative MPI setting can be found in '%(installdir)s/Convergent_Science/CONVERGE_CFD/4.1.1/environment/x64/scripts/CONVERGE/ (source the shell script in the desired subfolder)"
