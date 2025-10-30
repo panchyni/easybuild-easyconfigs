@@ -1,0 +1,47 @@
+diff --git a/src/alphafold3/build_data.py b/src/alphafold3/build_data.py
+index 0c33338..d998ba9 100644
+--- a/src/alphafold3/build_data.py
++++ b/src/alphafold3/build_data.py
+@@ -12,8 +12,8 @@
+ 
+ from importlib import resources
+ import pathlib
+-import site
+ 
++from alphafold3 import __path__ as install_path
+ import alphafold3.constants.converters
+ from alphafold3.constants.converters import ccd_pickle_gen
+ from alphafold3.constants.converters import chemical_component_sets_gen
+@@ -21,8 +21,8 @@ from alphafold3.constants.converters import chemical_component_sets_gen
+ 
+ def build_data():
+   """Builds intermediate data."""
+-  for site_path in site.getsitepackages():
+-    path = pathlib.Path(site_path) / 'share/libcifpp/components.cif'
++  for site_path in install_path:
++    path = pathlib.Path(site_path) / '../share/libcifpp/components.cif'
+     if path.exists():
+       cif_path = path
+       break
+diff --git a/src/alphafold3/model/mkdssp_pybind.cc b/src/alphafold3/model/mkdssp_pybind.cc
+index 27ca7b5..cb3293b 100644
+--- a/src/alphafold3/model/mkdssp_pybind.cc
++++ b/src/alphafold3/model/mkdssp_pybind.cc
+@@ -25,14 +25,14 @@ namespace alphafold3 {
+ namespace py = pybind11;
+ 
+ void RegisterModuleMkdssp(pybind11::module m) {
+-  py::module site = py::module::import("site");
+-  py::list paths = py::cast<py::list>(site.attr("getsitepackages")());
++  py::module alphafold3 = py::module::import("alphafold3");
++  py::list paths = py::cast<py::list>(alphafold3.attr("__path__"));
+   // Find the first path that contains the libcifpp components.cif file.
+   bool found = false;
+   for (const auto& py_path : paths) {
+     auto path_str =
+         std::filesystem::path(py::cast<absl::string_view>(py_path)) /
+-        "share/libcifpp/components.cif";
++        "../share/libcifpp/components.cif";
+     if (std::filesystem::exists(path_str)) {
+       setenv("LIBCIFPP_DATA_DIR", path_str.parent_path().c_str(), 0);
+       found = true;

@@ -1,0 +1,97 @@
+easyblock = 'PythonBundle'
+
+name = 'AlphaFold3'
+version = '3.0.1'
+versionsuffix = '-CUDA-%(cudaver)s-patch20250310'
+
+homepage = 'https://github.com/google-deepmind/alphafold3'
+description = "Bundle of Python packages for use with AlphaFold3"
+
+toolchain = {'name': 'foss', 'version': '2023a'}
+toolchainopts = {'pic': True}
+
+builddependencies = [
+    #('CMake', '3.26.3'),
+    #('meson-python', '0.13.2'),
+    #('scikit-build-core', '0.5.0'),
+    #('Ninja', '1.11.1'),
+    #('pybind11', '2.11.1'),
+]
+
+dependencies = [
+    ('HMMER', '3.4'),
+    ('CUDA', '12.6.0', '', SYSTEM),
+    ('Python', '3.11.3'),
+]
+
+sanity_pip_check = False
+use_pip = True
+
+github_account = 'google-deepmind'
+exts_list = [
+    # Proxy for all dependencies
+    ('%(namelower)s_dependencies', version, {
+        'source_urls': ['https://github.com/%(github_account)s/alphafold3/archive/refs/tags'],
+        'sources': [{
+            'filename': 'alphafold3-%(version)s-main-20251016.tar.gz',
+            'git_config': {
+                'url': 'https://github.com/google-deepmind/',
+                'repo_name': 'alphafold3',
+                'commit': 'e9b2f0ce3b62c75e5929467a2572a6ab108ad79b',
+            },
+        }],
+        'install_src': 'dev-requirements.txt',
+        'download_dep_fail': False,
+        'use_pip_requirement': True,
+        'pip_no_index': False,
+        'modulename': False,
+        'use_pip_for_deps': False,
+        'pip_ignore_installed': False,
+        'pip_build_isolation': True,
+    }),
+    (name, version, {
+        # 'source_urls': ['https://github.com/%(github_account)s/%(namelower)s/archive/refs/tags'],
+        'sources': ['%(namelower)s-%(version)s-main-20251016.tar.gz'],
+        'patches': [
+            '%(name)s-%(version)s_fix_components_lookup.patch',
+            '%(name)s-%(version)s_data_path.patch',
+        ],
+        'pip_verbose': True,
+        'postinstallcmds': [
+            'cp run_alphafold.py %(installdir)s/bin',
+            'chmod +x %(installdir)s/bin/run_alphafold.py',
+            '%(installdir)s/bin/build_data',
+        ],
+        'download_dep_fail': False,
+        'pip_no_index': False,
+        'use_pip_for_deps': True,
+        'pip_ignore_installed': False,
+        'pip_build_isolation': True,
+    }),
+]
+
+fix_python_shebang_for = ['bin/run_alphafold.py']
+
+sanity_check_paths = {
+    'files': ['bin/run_alphafold.py'],
+    'dirs': ['lib'],
+}
+
+sanity_check_commands = [
+    ('run_alphafold.py --help | grep "AlphaFold 3 structure prediction script"')
+]
+
+modextravars = {
+    'AF3_DB_DIR': '/mnt/research/common-data/alphafold/database_3/',
+    # acc. to: 
+    # https://github.com/google-deepmind/alphafold3/
+    #  blob/main/docs/performance.md#compilation-time-workaround-with-xla-flags
+    'XLA_FLAGS': '--xla_gpu_enable_triton_gemm=false ',
+    # https://github.com/google-deepmind/alphafold3/blob/main/docs/performance.md#cuda-capability-7x-gpus:
+    # 'XLA_FLAGS': '"--xla_gpu_enable_triton_gemm=false --xla_disable_hlo_passes=custom-kernel-fusion-rewriter"',
+    # Unified memory: 
+    'XLA_PYTHON_CLIENT_PREALLOCATE': 'true',
+    'XLA_CLIENT_MEM_FRACTION': '0.95',
+}
+
+moduleclass = 'bio'

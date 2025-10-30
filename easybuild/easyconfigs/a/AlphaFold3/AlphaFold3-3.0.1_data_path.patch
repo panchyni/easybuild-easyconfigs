@@ -1,0 +1,17 @@
+diff --git a/run_alphafold.py b/run_alphafold.py
+index b2c3e5b..d621bf3 100644
+--- a/run_alphafold.py
++++ b/run_alphafold.py
+@@ -56,7 +56,11 @@ import numpy as np
+ 
+ _HOME_DIR = pathlib.Path(os.environ.get('HOME'))
+ _DEFAULT_MODEL_DIR = _HOME_DIR / 'models'
+-_DEFAULT_DB_DIR = _HOME_DIR / 'public_databases'
++_DEFAULT_DB_DIR = os.environ.get('AF3_DB_DIR')
++if _DEFAULT_DB_DIR == None:
++    _DEFAULT_DB_DIR = _HOME_DIR / 'public_databases'
++else:
++    _DEFAULT_DB_DIR = pathlib.Path(_DEFAULT_DB_DIR)
+ 
+ 
+ # Input and output paths.
