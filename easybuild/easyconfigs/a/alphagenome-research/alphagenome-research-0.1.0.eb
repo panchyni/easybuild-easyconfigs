@@ -1,0 +1,42 @@
+easyblock = 'Conda'
+
+name = 'alphagenome-research'
+version = '0.1.0'
+
+
+homepage = 'https://github.com/google-deepmind/alphagenome_research'
+description = "AlphaGenome research code from DeepMind"
+
+toolchain = SYSTEM
+
+channels = ['conda-forge']
+
+requirements = 'python=3.11'
+
+builddependencies = [('Miniforge3', '25.11.0-1')]
+
+sources = [{
+    'filename': 'alphagenome_research.tar.gz',
+    'git_config': {
+        'url': 'https://github.com/google-deepmind',
+        'repo_name': 'alphagenome_research',
+        'tag': 'v0.1.0',
+    }
+}]
+
+moduleclass = 'bio'
+
+postinstallcmds = [
+    'tar -xzf %(builddir)s/alphagenome_research.tar.gz -C %(builddir)s',
+    '%(installdir)s/bin/pip install %(builddir)s/alphagenome_research',
+]
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ['bin', 'lib/python3.11/site-packages/alphagenome_research'],
+}
+
+sanity_check_commands = [
+
+    "python --version"
+]
